@@ -32,7 +32,11 @@ cmsy_bbmsy <- plyr::ldply(cmsy_fits, function(x) {
     bbmsy_out}, error = function(e) fake_data)
 })
 cmsy_bbmsy$model <- "CMSY"
+<<<<<<< HEAD
+write.csv(cmsy_bbmsy, "circle2016/prep/FIS/reg/catch_model_bmsy_reg/cmsy_bbmsy_reg.csv", row.names=FALSE)
+=======
 write.csv(cmsy_bbmsy, "circle2016/prep/FIS/reg/noba/catch_model_bmsy_noba/cmsy_bbmsy_noba.csv", row.names=FALSE)
+>>>>>>> 0a274ebb0905145c89a89fad84fe28856d4f05ae
 
 ###Format CMSY data for toolbox######
 library(dplyr)
@@ -40,7 +44,11 @@ library(tidyr)
 library(zoo)
 library(stringr)
 
+<<<<<<< HEAD
+cmsy <- read.csv('circle2016/prep/FIS/reg/catch_model_bmsy_reg/cmsy_bbmsy_reg.csv') %>%
+=======
 cmsy <- read.csv('circle2016/prep/FIS/reg/noba/catch_model_bmsy_noba/cmsy_bbmsy_noba.csv') %>%
+>>>>>>> 0a274ebb0905145c89a89fad84fe28856d4f05ae
   mutate(prior = 'constrained') %>%
   filter(!is.na(bbmsy_mean))
 
@@ -53,6 +61,13 @@ new_b_bmsy <- function(b_bmsy=constrained, method = "cmsy"){
     dplyr::select(stock_id, year, bbmsy_mean, prior, model) %>%
     arrange(stock_id, year) %>%
     group_by(stock_id) %>%
+<<<<<<< HEAD
+    mutate(mean_5year = rollmean(bbmsy_mean, 5, align="right", fill=NA))
+  write.csv(b_bmsy, sprintf('circle2016/prep/FIS/noba/meanbmsy/%s_b_bmsy_%s_mean5yrs_reg.csv', method, unique(b_bmsy$prior)), row.names=FALSE)
+}
+
+new_b_bmsy(cmsy, method="cmsy")
+=======
     mutate(mean_5year = zoo::rollmean(bbmsy_mean, 5, align="right", fill=NA))
   write.csv(b_bmsy, sprintf('circle2016/prep/FIS/reg/noba/meanbmsy/%s_b_bmsy_%s_mean5yrs_noba.csv', method, unique(b_bmsy$prior)), row.names=FALSE)
 }
@@ -291,7 +306,11 @@ FIS = function(layers, status_year){
 
   return(scores)
 }
+<<<<<<< HEAD:circle2016/prep/FIS/reg/noba/noba_fis.R
 
 write.csv(status_data, 'circle2016/prep/FIS/reg/noba/status/fmsy1_status.csv')
 
 
+=======
+>>>>>>> 0a274ebb0905145c89a89fad84fe28856d4f05ae
+>>>>>>> ca7b5a2db2b97f80cb6ac9ec3e80cbefd843c9cd:circle2016/prep/FIS/reg/noba/noba_fis_old.R
