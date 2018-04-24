@@ -5,7 +5,7 @@ install.packages("devtools")
 devtools::install_github("datalimited/datalimited")
 ################# Load Catch Data###########
 
-catch<- read.csv('circle2016/prep/FIS/reg/noba/spatial_catch_prebbmsy_fmsy1.csv')%>%
+catch<- read.csv('circle2016/prep/FIS/reg/noba/spatial_catch_prebbmsy_fmsy2.csv')%>%
   rename(common = Common_Name)
 
 fis_dir<- 'circle2016/prep/FIS'
@@ -20,7 +20,7 @@ cmsy_fits <- plyr::dlply(catch, c("stock_id", "common"), function(x) {
   out$year <- x$year
   out
 }, .parallel = TRUE)
-saveRDS(cmsy_fits, file = file.path(fis_dir,"reg/noba/catch_model_bmsy_noba/cmsy-fits.rds"))
+saveRDS(cmsy_fits, file = file.path(fis_dir,"reg/noba/catch_model_bmsy_noba/cmsy-fits-fmsy2.rds"))
 fake_data <- data.frame(bbmsy_q2.5 = NA, bbmsy_q25 = NA, bbmsy_q50 = NA,
                         bbmsy_q75 = NA, bbmsy_q97.5 = NA)
 
@@ -32,7 +32,7 @@ cmsy_bbmsy <- plyr::ldply(cmsy_fits, function(x) {
     bbmsy_out}, error = function(e) fake_data)
 })
 cmsy_bbmsy$model <- "CMSY"
-write.csv(cmsy_bbmsy, "circle2016/prep/FIS/reg/noba/catch_model_bmsy_noba/cmsy_bbmsy_noba.csv", row.names=FALSE)
+write.csv(cmsy_bbmsy, "circle2016/prep/FIS/reg/noba/catch_model_bmsy_noba/cmsy_bbmsy_noba_fmsy2.csv", row.names=FALSE)
 
 ###Format CMSY data for toolbox######
 library(dplyr)
@@ -40,7 +40,7 @@ library(tidyr)
 library(zoo)
 library(stringr)
 
-cmsy <- read.csv('circle2016/prep/FIS/reg/noba/catch_model_bmsy_noba/cmsy_bbmsy_noba.csv') %>%
+cmsy <- read.csv('circle2016/prep/FIS/reg/noba/catch_model_bmsy_noba/cmsy_bbmsy_noba_fmsy2.csv') %>%
   mutate(prior = 'constrained') %>%
   filter(!is.na(bbmsy_mean))
 
@@ -54,14 +54,14 @@ new_b_bmsy <- function(b_bmsy=constrained, method = "cmsy"){
     arrange(stock_id, year) %>%
     group_by(stock_id) %>%
     mutate(mean_5year = zoo::rollmean(bbmsy_mean, 5, align="right", fill=NA))
-  write.csv(b_bmsy, sprintf('circle2016/prep/FIS/reg/noba/meanbmsy/%s_b_bmsy_%s_mean5yrs_noba.csv', method, unique(b_bmsy$prior)), row.names=FALSE)
+  write.csv(b_bmsy, sprintf('circle2016/prep/FIS/reg/noba/meanbmsy/%s_b_bmsy_%s_mean5yrs_noba_fmsy2.csv', method, unique(b_bmsy$prior)), row.names=FALSE)
 }
 
 new_b_bmsy(cmsy, method="cmsy")
 
 ###### Final formatting
 
-cmsy <- read.csv('circle2016/prep/FIS/reg/noba/meanbmsy/cmsy_b_bmsy_constrained_mean5yrs_noba.csv') %>%
+cmsy <- read.csv('circle2016/prep/FIS/reg/noba/meanbmsy/cmsy_b_bmsy_constrained_mean5yrs_noba_fmsy2.csv') %>%
   dplyr::select(stock_id, year, cmsy_bbmsy=mean_5year)
 
 
@@ -69,7 +69,7 @@ cmsy <- read.csv('circle2016/prep/FIS/reg/noba/meanbmsy/cmsy_b_bmsy_constrained_
 #dplyr::select(stock_id, year, comsir_bbmsy=mean_5year)
 
 ## Mean catch data created in "meanCatch.R"
-mean_catch <- read.csv("circle2016/prep/FIS/reg/noba/fmsy1_meancatch.csv") %>%
+mean_catch <- read.csv("circle2016/prep/FIS/reg/noba/fmsy2_meancatch.csv") %>%
   mutate(stock_id_taxonkey = as.character(stock_id_taxonkey)) %>%
   mutate(taxon_key = str_sub(stock_id_taxonkey, -6, -1)) %>%
   mutate(stock_id = substr(stock_id_taxonkey, 1, nchar(stock_id_taxonkey)-7))
@@ -96,7 +96,7 @@ data <- mean_catch %>%
   filter(!is.na(bbmsy)) %>%
   unique()
 
-write.csv(data, file='circle2016/prep/FIS/reg/noba/fis_cmsy_bbmsy_noRAM_noba.csv', row.names=FALSE)
+write.csv(data, file='circle2016/prep/FIS/reg/noba/fis_cmsy_bbmsy_noRAM_noba_fmsy2.csv', row.names=FALSE)
 
 
 
@@ -105,14 +105,14 @@ write.csv(data, file='circle2016/prep/FIS/reg/noba/fis_cmsy_bbmsy_noRAM_noba.csv
 FIS = function(layers, status_year){
 
   #catch data
-  c<- read.csv('circle2016/prep/FIS/reg/noba/fmsy1_meancatch.csv') %>%
+  c<- read.csv('circle2016/prep/FIS/reg/noba/fmsy2_meancatch.csv') %>%
     dplyr::select(
       rgn_id,
       stock_id_taxonkey,
       year,
       catch          = mean_catch)
   # b_bmsy data
-  b<- read.csv('circle2016/prep/FIS/reg/noba/fis_cmsy_bbmsy_noRAM_noba.csv') %>%
+  b<- read.csv('circle2016/prep/FIS/reg/noba/fis_cmsy_bbmsy_noRAM_noba_fmsy2.csv') %>%
     dplyr::select(
       rgn_id,
       stock_id,
@@ -293,5 +293,3 @@ FIS = function(layers, status_year){
 }
 
 write.csv(status_data, 'circle2016/prep/FIS/reg/noba/status/fmsy1_status.csv')
-
-
