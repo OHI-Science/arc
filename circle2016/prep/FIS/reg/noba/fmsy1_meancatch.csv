@@ -1,4 +1,4 @@
-rgn_id,stock_id_taxonkey,Year,meancatch
+rgn_id,stock_id_taxonkey,year,mean_catch
 1,Sebastes_marinus-27_600501,1981,84788.58701
 1,Sebastes_marinus-27_600501,1982,84788.58701
 1,Sebastes_marinus-27_600501,1983,84788.58701
