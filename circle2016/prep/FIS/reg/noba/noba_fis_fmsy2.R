@@ -78,8 +78,8 @@ mean_catch <- read.csv("circle2016/prep/FIS/reg/noba/fmsy2_meancatch.csv") %>%
 setdiff(cmsy$stock_id, mean_catch$stock_id)
 setdiff(mean_catch$stock_id, cmsy$stock_id)
 intersect(mean_catch$stock_id, cmsy$stock_id) #946
-mean_catch<- rename(mean_catch, year=Year)
-mean_catch<- rename(mean_catch, mean_catch=meancatch)
+#mean_catch<- rename(mean_catch, year=Year)
+#mean_catch<- rename(mean_catch, mean_catch=meancatch)
 
 
 
@@ -292,4 +292,4 @@ FIS = function(layers, status_year){
   return(scores)
 }
 
-write.csv(status_data, 'circle2016/prep/FIS/reg/noba/status/fmsy1_status.csv')
+write.csv(status_data, 'circle2016/prep/FIS/reg/noba/status/fmsy2_status.csv')
