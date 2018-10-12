@@ -25,3 +25,4 @@ ggplot() +
         axis.ticks.y = element_blank(),
         axis.text.y=element_blank(),
         axis.title.y=element_blank())
+
