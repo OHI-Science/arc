@@ -5,7 +5,7 @@ install.packages("devtools")
 devtools::install_github("datalimited/datalimited")
 ################# Load Catch Data###########
 
-catch<- read.csv('circle2016/prep/FIS/reg/noba/spatial_catch_prebbmsy_fmsy06.csv')%>%
+catch<- read.csv('circle2016/prep/FIS/reg/noba2/spatial_catch_prebbmsy_fmsy06.csv')%>%
   rename(common = Common_Name)
 
 fis_dir<- 'circle2016/prep/FIS'
@@ -20,7 +20,7 @@ cmsy_fits <- plyr::dlply(catch, c("stock_id", "common"), function(x) {
   out$year <- x$year
   out
 }, .parallel = TRUE)
-saveRDS(cmsy_fits, file = file.path(fis_dir,"reg/noba/catch_model_bmsy_noba/cmsy-fits.rds"))
+saveRDS(cmsy_fits, file = file.path(fis_dir,"reg/noba2/catch_model_bmsy_noba/cmsy-fits06.rds"))
 fake_data <- data.frame(bbmsy_q2.5 = NA, bbmsy_q25 = NA, bbmsy_q50 = NA,
                         bbmsy_q75 = NA, bbmsy_q97.5 = NA)
 
@@ -32,7 +32,7 @@ cmsy_bbmsy <- plyr::ldply(cmsy_fits, function(x) {
     bbmsy_out}, error = function(e) fake_data)
 })
 cmsy_bbmsy$model <- "CMSY"
-write.csv(cmsy_bbmsy, "circle2016/prep/FIS/reg/noba/catch_model_bmsy_noba/cmsy_bbmsy_noba.csv", row.names=FALSE)
+write.csv(cmsy_bbmsy, "circle2016/prep/FIS/reg/noba2/catch_model_bmsy_noba/cmsy_bbmsy_noba06.csv", row.names=FALSE)
 
 ###Format CMSY data for toolbox######
 library(dplyr)
@@ -40,39 +40,25 @@ library(tidyr)
 library(zoo)
 library(stringr)
 
-<<<<<<< HEAD
-cmsy <- read.csv('circle2016/prep/FIS/reg/catch_model_bmsy_reg/cmsy_bbmsy_reg.csv') %>%
-  =======
-  cmsy <- read.csv('circle2016/prep/FIS/reg/noba/catch_model_bmsy_noba/cmsy_bbmsy_noba.csv') %>%
-  >>>>>>> 0a274ebb0905145c89a89fad84fe28856d4f05ae
+cmsy <- read.csv('circle2016/prep/FIS/reg/noba2/catch_model_bmsy_noba/cmsy_bbmsy_noba06.csv') %>%
 mutate(prior = 'constrained') %>%
   filter(!is.na(bbmsy_mean))
-
-#comsir <- read.csv('prep/FIS/catch_model_bmsy/comsir_bbmsy.csv') %>%
-#mutate(prior = 'NA') %>%
-#filter(!is.na(bbmsy_mean))
 
 new_b_bmsy <- function(b_bmsy=constrained, method = "cmsy"){
   b_bmsy <- b_bmsy %>%
     dplyr::select(stock_id, year, bbmsy_mean, prior, model) %>%
     arrange(stock_id, year) %>%
     group_by(stock_id) %>%
-    <<<<<<< HEAD
   mutate(mean_5year = rollmean(bbmsy_mean, 5, align="right", fill=NA))
-  write.csv(b_bmsy, sprintf('circle2016/prep/FIS/noba/meanbmsy/%s_b_bmsy_%s_mean5yrs_reg.csv', method, unique(b_bmsy$prior)), row.names=FALSE)
-}
+  write.csv(b_bmsy, sprintf('circle2016/prep/FIS/reg/noba2/meanbmsy/%s_b_bmsy_%s_mean5yrs_noba_fmsy06.csv', method, unique(b_bmsy$prior)), row.names=FALSE)
 
-new_b_bmsy(cmsy, method="cmsy")
-=======
-  mutate(mean_5year = zoo::rollmean(bbmsy_mean, 5, align="right", fill=NA))
-write.csv(b_bmsy, sprintf('circle2016/prep/FIS/reg/noba/meanbmsy/%s_b_bmsy_%s_mean5yrs_noba.csv', method, unique(b_bmsy$prior)), row.names=FALSE)
 }
 
 new_b_bmsy(cmsy, method="cmsy")
 
 ###### Final formatting
 
-cmsy <- read.csv('circle2016/prep/FIS/reg/noba/meanbmsy/cmsy_b_bmsy_constrained_mean5yrs_noba.csv') %>%
+cmsy <- read.csv('circle2016/prep/FIS/reg/noba2/meanbmsy/cmsy_b_bmsy_constrained_mean5yrs_noba_fmsy06.csv') %>%
   dplyr::select(stock_id, year, cmsy_bbmsy=mean_5year)
 
 
@@ -80,7 +66,7 @@ cmsy <- read.csv('circle2016/prep/FIS/reg/noba/meanbmsy/cmsy_b_bmsy_constrained_
 #dplyr::select(stock_id, year, comsir_bbmsy=mean_5year)
 
 ## Mean catch data created in "meanCatch.R"
-mean_catch <- read.csv("circle2016/prep/FIS/reg/noba/fmsy1_meancatch.csv") %>%
+mean_catch <- read.csv("circle2016/prep/FIS/reg/noba2/fmsy06_meancatch.csv") %>%
   mutate(stock_id_taxonkey = as.character(stock_id_taxonkey)) %>%
   mutate(taxon_key = str_sub(stock_id_taxonkey, -6, -1)) %>%
   mutate(stock_id = substr(stock_id_taxonkey, 1, nchar(stock_id_taxonkey)-7))
@@ -89,7 +75,7 @@ mean_catch <- read.csv("circle2016/prep/FIS/reg/noba/fmsy1_meancatch.csv") %>%
 setdiff(cmsy$stock_id, mean_catch$stock_id)
 setdiff(mean_catch$stock_id, cmsy$stock_id)
 intersect(mean_catch$stock_id, cmsy$stock_id) #946
-mean_catch<- rename(mean_catch, year=Year)
+#mean_catch<- rename(mean_catch, Year=year)
 mean_catch<- rename(mean_catch, mean_catch=meancatch)
 
 
@@ -107,7 +93,7 @@ data <- mean_catch %>%
   filter(!is.na(bbmsy)) %>%
   unique()
 
-write.csv(data, file='circle2016/prep/FIS/reg/noba/fis_cmsy_bbmsy_noRAM_noba.csv', row.names=FALSE)
+write.csv(data, file='circle2016/prep/FIS/reg/noba2/fis_cmsy_bbmsy_noRAM_noba.csv', row.names=FALSE)
 
 
 
@@ -116,14 +102,14 @@ write.csv(data, file='circle2016/prep/FIS/reg/noba/fis_cmsy_bbmsy_noRAM_noba.csv
 FIS = function(layers, status_year){
 
   #catch data
-  c<- read.csv('circle2016/prep/FIS/reg/noba/fmsy1_meancatch.csv') %>%
+  c<- read.csv('circle2016/prep/FIS/reg/noba2/fmsy06_meancatch.csv') %>%
     dplyr::select(
       rgn_id,
       stock_id_taxonkey,
       year,
       catch          = mean_catch)
   # b_bmsy data
-  b<- read.csv('circle2016/prep/FIS/reg/noba/fis_cmsy_bbmsy_noRAM_noba.csv') %>%
+  b<- read.csv('circle2016/prep/FIS/reg/noba2/fis_cmsy_bbmsy_noRAM_noba.csv') %>%
     dplyr::select(
       rgn_id,
       stock_id,
@@ -221,7 +207,7 @@ FIS = function(layers, status_year){
   #  penalty for not identifying fisheries catch data to
   #  species level.
   #  ***********************************************
-  status_year=2015
+  status_year=2068
   penaltyTable <- data.frame(TaxonPenaltyCode=1:6,
                              penalty=c(0.1, 0.25, 0.5, 0.8, 0.9, 1))
 
@@ -237,8 +223,8 @@ FIS = function(layers, status_year){
     mutate(gap_fill = ifelse(is.na(bmsy), "mean", "none")) %>%
     dplyr::select(rgn_id, stock_id, taxon_key, year, catch, score, gap_fill) %>%
     filter(year == status_year)
-  write.csv(gap_fill_data, 'circle2016/temp/FIS_summary_gf_reg.csv', row.names=FALSE)
-  write.csv(data_fis_gf, 'circle2016/temp/FIS_summary_gf2_reg.csv', row.names=FALSE)
+  write.csv(gap_fill_data, 'circle2016/prep/FIS/reg/noba2/gf/FIS_summary_gf_fmsy06.csv', row.names=FALSE)
+  write.csv(data_fis_gf, 'circle2016/prep/FIS/reg/noba2/gf/FIS_summary_gf2_fmsy06.csv', row.names=FALSE)
 
   status_data <- data_fis_gf %>%
     dplyr::select(rgn_id, stock_id, year, catch, score)
