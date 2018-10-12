@@ -76,7 +76,7 @@ setdiff(cmsy$stock_id, mean_catch$stock_id)
 setdiff(mean_catch$stock_id, cmsy$stock_id)
 intersect(mean_catch$stock_id, cmsy$stock_id) #946
 #mean_catch<- rename(mean_catch, Year=year)
-mean_catch<- rename(mean_catch, mean_catch=meancatch)
+#mean_catch<- rename(mean_catch, mean_catch=meancatch)
 
 
 
@@ -261,7 +261,7 @@ FIS = function(layers, status_year){
       dimension = 'status') %>%
     dplyr::select(region_id=rgn_id, score, dimension)
 
-  status_year<- 2014
+  status_year<- 2068
   trend_years <- status_year:(status_year-4)
   first_trend_year <- min(trend_years)
 
@@ -288,11 +288,7 @@ FIS = function(layers, status_year){
 
   return(scores)
 }
-<<<<<<< HEAD:circle2016/prep/FIS/reg/noba/noba_fis.R
 
-write.csv(status_data, 'circle2016/prep/FIS/reg/noba/status/fmsy1_status.csv')
+write.csv(status_data, 'circle2016/prep/FIS/reg/noba2/status/fmsy06_status.csv')
 
 
-=======
-  >>>>>>> 0a274ebb0905145c89a89fad84fe28856d4f05ae
->>>>>>> ca7b5a2db2b97f80cb6ac9ec3e80cbefd843c9cd:circle2016/prep/FIS/reg/noba/noba_fis_old.R
