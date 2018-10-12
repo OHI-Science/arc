@@ -33,5 +33,5 @@ tmp <- data.frame(c_cmsy = seq(0,3, by=0.01)) %>%
   mutate(score = ifelse(c_cmsy > 1.1, 2.1-c_cmsy,
                         ifelse(c_cmsy < 0.9, eps + score_range/value_range * c_cmsy, 1)))%>%
   mutate(score = ifelse(score < 0, 0, score))
-plot(score ~ c_cmsy, data=tmp, xlab='C/CL', ylab="Stock status score", type="l")
+plot(score ~ c_cmsy, data=tmp, xlab='C/CL', ylab="Stock status score", type="l", cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5)
 dev.off()
