@@ -92,7 +92,7 @@ data <- mean_catch %>%
   filter(!is.na(bbmsy)) %>%
   unique()
 
-write.csv(data, file='circle2016/prep/FIS/reg/noba2/fis_cmsy_bbmsy_noRAM_noba.csv', row.names=FALSE)
+write.csv(data, file='circle2016/prep/FIS/reg/noba2/fis_cmsy_bbmsy_noRAM_noba08.csv', row.names=FALSE)
 
 
 
@@ -107,7 +107,7 @@ c<- read.csv('circle2016/prep/FIS/reg/noba2/fmsy08_meancatch.csv') %>%
     year,
     catch          = mean_catch)
 # b_bmsy data
-b<- read.csv('circle2016/prep/FIS/reg/noba2/fis_cmsy_bbmsy_noRAM_noba.csv') %>%
+b<- read.csv('circle2016/prep/FIS/reg/noba2/fis_cmsy_bbmsy_noRAM_noba08.csv') %>%
   dplyr::select(
     rgn_id,
     stock_id,
@@ -127,10 +127,10 @@ b<- read.csv('circle2016/prep/FIS/reg/noba2/fis_cmsy_bbmsy_noRAM_noba.csv') %>%
 # proportion of catch of these stocks.  The following corrects this problem:
 #filter(b, stock_id %in% c('Katsuwonus_pelamis-71', 'Clupea_harengus-27', 'Trachurus_capensis-47'))
 
-high_bmsy <- c('Katsuwonus_pelamis-71', 'Clupea_harengus-27', 'Trachurus_capensis-47', 'Sardinella_aurita-34', 'Scomberomorus_cavalla-31')
+#high_bmsy <- c('Katsuwonus_pelamis-71', 'Clupea_harengus-27', 'Trachurus_capensis-47', 'Sardinella_aurita-34', 'Scomberomorus_cavalla-31')
 
-b <- b %>%
-  mutate(bmsy = ifelse(stock_id %in% high_bmsy, 1, bmsy))
+#b <- b %>%
+  #mutate(bmsy = ifelse(stock_id %in% high_bmsy, 1, bmsy))
 
 
 # separate out the stock_id and taxonkey:
